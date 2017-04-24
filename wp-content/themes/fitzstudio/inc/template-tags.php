@@ -25,17 +25,33 @@ function fitzstudio_posted_on() {
 	);
 
 	$posted_on = sprintf(
-		esc_html_x( 'Posted on %s', 'post date', 'fitzstudio' ),
+		esc_html_x( 'Published %s', 'post date', 'fitzstudio' ),
 		'<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">' . $time_string . '</a>'
 	);
 
 	$byline = sprintf(
-		esc_html_x( 'by %s', 'post author', 'fitzstudio' ),
+		esc_html_x( 'Written by %s', 'post author', 'fitzstudio' ),
 		'<span class="author vcard"><a class="url fn n" href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '">' . esc_html( get_the_author() ) . '</a></span>'
 	);
-
-	echo '<span class="posted-on">' . $posted_on . '</span><span class="byline"> ' . $byline . '</span>'; // WPCS: XSS OK.
-
+        
+	echo '<span class="byline"> ' . $byline . '</span> <span class="posted-on">' . $posted_on . '</span>'; // WPCS: XSS OK.
+ 
+        if ( ! post_password_required() && ( comments_open() || get_comments_number() ) ) {
+		echo ' <span class="comments-link">';
+		/* translators: %s: post title */
+		comments_popup_link( sprintf( wp_kses( __( 'Leave a Comment<span class="screen-reader-text"> on %s</span>', 'fitzstudio' ), array( 'span' => array( 'class' => array() ) ) ), get_the_title() ) );
+		echo '</span>';
+	}
+        
+        edit_post_link(
+		sprintf(
+			/* translators: %s: Name of current post */
+			esc_html__( 'Edit %s', 'fitzstudio' ),
+			the_title( '<span class="screen-reader-text">"', '"</span>', false )
+		),
+		' <span class="edit-link">',
+		'</span>'
+	);
 }
 endif;
 
@@ -44,37 +60,14 @@ if ( ! function_exists( 'fitzstudio_entry_footer' ) ) :
  * Prints HTML with meta information for the categories, tags and comments.
  */
 function fitzstudio_entry_footer() {
-	// Hide category and tag text for pages.
+	// Hide tag text for pages.
 	if ( 'post' === get_post_type() ) {
-		/* translators: used between list items, there is a space after the comma */
-		$categories_list = get_the_category_list( esc_html__( ', ', 'fitzstudio' ) );
-		if ( $categories_list && fitzstudio_categorized_blog() ) {
-			printf( '<span class="cat-links">' . esc_html__( 'Posted in %1$s', 'fitzstudio' ) . '</span>', $categories_list ); // WPCS: XSS OK.
-		}
-
 		/* translators: used between list items, there is a space after the comma */
 		$tags_list = get_the_tag_list( '', esc_html__( ', ', 'fitzstudio' ) );
 		if ( $tags_list ) {
 			printf( '<span class="tags-links">' . esc_html__( 'Tagged %1$s', 'fitzstudio' ) . '</span>', $tags_list ); // WPCS: XSS OK.
 		}
 	}
-
-	if ( ! is_single() && ! post_password_required() && ( comments_open() || get_comments_number() ) ) {
-		echo '<span class="comments-link">';
-		/* translators: %s: post title */
-		comments_popup_link( sprintf( wp_kses( __( 'Leave a Comment<span class="screen-reader-text"> on %s</span>', 'fitzstudio' ), array( 'span' => array( 'class' => array() ) ) ), get_the_title() ) );
-		echo '</span>';
-	}
-
-	edit_post_link(
-		sprintf(
-			/* translators: %s: Name of current post */
-			esc_html__( 'Edit %s', 'fitzstudio' ),
-			the_title( '<span class="screen-reader-text">"', '"</span>', false )
-		),
-		'<span class="edit-link">',
-		'</span>'
-	);
 }
 endif;
 
@@ -83,6 +76,15 @@ endif;
  *
  * @return bool
  */
+
+function fitzstudio_category_list() {
+    /* translators: used between list items, there is a space after the comma */
+		$categories_list = get_the_category_list( esc_html__( ', ', 'fitzstudio' ) );
+		if ( $categories_list && fitzstudio_categorized_blog() ) {
+			printf( '<span class="cat-links">' . esc_html__( '%1$s', 'fitzstudio' ) . '</span>', $categories_list ); // WPCS: XSS OK.
+		}
+}
+
 function fitzstudio_categorized_blog() {
 	if ( false === ( $all_the_cool_cats = get_transient( 'fitzstudio_categories' ) ) ) {
 		// Create an array of all the categories that are attached to posts.
@@ -120,3 +122,17 @@ function fitzstudio_category_transient_flusher() {
 }
 add_action( 'edit_category', 'fitzstudio_category_transient_flusher' );
 add_action( 'save_post',     'fitzstudio_category_transient_flusher' );
+
+/**
+ * Post navigation (previous / next post) for single posts.
+ */
+function fitzstudio_post_navigation() {
+	the_post_navigation( array(
+		'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next', 'fitzstudio' ) . '</span> ' .
+			'<span class="screen-reader-text">' . __( 'Next post:', 'fitzstudio' ) . '</span> ' .
+			'<span class="post-title">%title</span>',
+		'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous', 'fitzstudio' ) . '</span> ' .
+			'<span class="screen-reader-text">' . __( 'Previous post:', 'fitzstudio' ) . '</span> ' .
+			'<span class="post-title">%title</span>',
+	) );
+}
