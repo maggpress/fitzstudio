@@ -37,7 +37,7 @@ function fitzstudio_posted_on() {
 	echo '<span class="byline"> ' . $byline . '</span> <span class="posted-on">' . $posted_on . '</span>'; // WPCS: XSS OK.
  
         if ( ! post_password_required() && ( comments_open() || get_comments_number() ) ) {
-		echo ' <span class="comments-link">';
+		echo ' <span class="comments-link"><span class="extra">Discussion </span>';
 		/* translators: %s: post title */
 		comments_popup_link( sprintf( wp_kses( __( 'Leave a Comment<span class="screen-reader-text"> on %s</span>', 'fitzstudio' ), array( 'span' => array( 'class' => array() ) ) ), get_the_title() ) );
 		echo '</span>';
@@ -49,7 +49,7 @@ function fitzstudio_posted_on() {
 			esc_html__( 'Edit %s', 'fitzstudio' ),
 			the_title( '<span class="screen-reader-text">"', '"</span>', false )
 		),
-		' <span class="edit-link">',
+		' <span class="edit-link"><span class="extra">Admin </span>',
 		'</span>'
 	);
 }
@@ -79,10 +79,10 @@ endif;
 
 function fitzstudio_category_list() {
     /* translators: used between list items, there is a space after the comma */
-		$categories_list = get_the_category_list( esc_html__( ', ', 'fitzstudio' ) );
-		if ( $categories_list && fitzstudio_categorized_blog() ) {
-			printf( '<span class="cat-links">' . esc_html__( '%1$s', 'fitzstudio' ) . '</span>', $categories_list ); // WPCS: XSS OK.
-		}
+	$categories_list = get_the_category_list( esc_html__( ', ', 'fitzstudio' ) );
+	if ( $categories_list && fitzstudio_categorized_blog() ) {
+	printf( '<span class="cat-links">' . esc_html__( '%1$s', 'fitzstudio' ) . '</span>', $categories_list ); // WPCS: XSS OK.
+	}
 }
 
 function fitzstudio_categorized_blog() {

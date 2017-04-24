@@ -23,6 +23,13 @@ function fitzstudio_body_classes( $classes ) {
 	if ( ! is_singular() ) {
 		$classes[] = 'hfeed';
 	}
+        // Adds a class tellingus if sidebar is in use.
+	if ( ! is_active_sidebar( 'sidebar' ) ) {
+		$classes[] = 'has-sidebar';
+	} else {
+            $classes[] = 'no-sidebar';
+        }
+        
 
 	return $classes;
 }
