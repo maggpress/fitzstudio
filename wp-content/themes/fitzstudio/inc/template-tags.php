@@ -136,3 +136,17 @@ function fitzstudio_post_navigation() {
 			'<span class="post-title">%title</span>',
 	) );
 }
+/**
+ * Customize ellipsis at end of excerpts.
+ */
+function fitzstudio_excerpt_more( $more ) {
+	return "…";
+}
+add_filter( 'excerpt_more', 'fitzstudio_excerpt_more' );
+/**
+ * Filter excerpt length to 100 words.
+ */
+function fitzstudio_excerpt_length( $length ) {
+	return 50;
+}
+add_filter( 'excerpt_length', 'fitzstudio_excerpt_length');
