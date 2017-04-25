@@ -24,8 +24,17 @@
 		<?php
 		endif; ?>
 	</header><!-- .entry-header -->
-
-	<section class="post-content">
+        
+        <?php
+	if ( has_post_thumbnail() ) { ?>
+	<figure class="featured-image full-bleed">
+		<?php
+		the_post_thumbnail('fitzstudio-full-bleed');
+		?>
+	</figure><!-- .featured-image full-bleed -->
+	<?php } ?>
+	
+           <section class="post-content">
 		
 		<?php
 		if ( !is_active_sidebar( 'sidebar-1' ) ) : ?>
@@ -36,7 +45,6 @@
 			<div class="post-content__body">
 		<?php
 		endif; ?>
-		
 		<div class="entry-content">
 			<?php
 				the_content( sprintf(
