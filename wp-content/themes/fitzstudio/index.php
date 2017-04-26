@@ -35,13 +35,14 @@ get_header(); ?>
 				 */
 				get_template_part( 'template-parts/content', get_post_format() );
 			endwhile;
+                        
 			the_posts_pagination( array(
-				'prev_text' => __( 'Newer', 'fitzstudio' ),
+                                'prev_text' => __( 'Newer', 'fitzstudio' ),
 				'next_text' => __( 'Older', 'fitzstudio' ),
 				'before_page_number' => '<span class="screen-reader-text">' . __( 'Page ', 'fitzstudio' ) . '</span>',
 			));
 		?>
-
+                    
 		</main><!-- #main -->
 	</div><!-- #primary -->
 
